@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Function to install packages on macOS using Homebrew
+install_macos() {
+    echo "mac detected, moving forward w brew"
+    brew install neovim
+    brew install alacritty
+    brew install fish
+}
+
+# Function to install packages on Arch Linux using Yay/Pacman
+install_arch() {
+    echo "arch detected, moving forward with yay o/wise pacman"
+    # Check if Yay is installed, otherwise use Pacman
+    if command -v yay &> /dev/null; then
+        yay -Syu --needed neovim alacritty fish
+    else
+        sudo pacman -Syu --needed neovim alacritty fish
+    fi
+}
+
+# Detect the operating system and call the appropriate function
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    install_macos
+elif [[ -f /etc/arch-release ]]; then
+    install_arch
+else
+    echo "can't figure out the OS/system"
+    exit 1
+fi
+
+# Set fish as the default shell if it's not already set
+if [[ "$SHELL" != "$(which fish)" ]]; then
+    echo "Setting Fish as the default shell..."
+    chsh -s $(which fish)
+fi
+
+echo "ay yo tha pizza here"
+
