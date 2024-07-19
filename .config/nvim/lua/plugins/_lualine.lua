@@ -149,7 +149,12 @@ return {
     ins_left({
       "diagnostics",
       sources = { "nvim_diagnostic" },
-      symbols = { error = "x", warn = "▲", info = "◊", hint = "💡" },
+      symbols = {
+        error = '',
+        warn = '',
+        hint = '',
+        info = ''
+      },
       diagnostics_color = {
         color_error = { fg = colors.red },
         color_warn = { fg = colors.yellow },
@@ -187,7 +192,7 @@ return {
 
     -- Add components to right sections
     ins_right({
-      "o:encoding",    -- option component same as &encoding in viml
+      "o:encoding",       -- option component same as &encoding in viml
       fmt = string.upper, -- I'm not sure why it's upper case either ;)
       cond = conditions.hide_in_width,
       color = { fg = colors.fg2 },

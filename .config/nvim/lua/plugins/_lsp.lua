@@ -2,16 +2,37 @@ local map = vim.keymap.set
 
 return {
   {
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v3.x',
+  },
+
+  {
+    'williamboman/mason-lspconfig.nvim'
+  },
+
+  {
+    'neovim/nvim-lspconfig',
+    event = "BufReadPre",
+  },
+  {
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      { 'williamboman/mason.nvim', opts = {} }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
     },
     config = function()
       local lsp_zero = require('lsp-zero')
+
       lsp_zero.extend_lspconfig()
+
+      lsp_zero.set_sign_icons({
+        error = '',
+        warn = '',
+        hint = '',
+        info = ''
+      })
 
       lsp_zero.on_attach(function(client, bufnr)
         local opts = { buffer = bufnr, silent = true }
@@ -45,18 +66,4 @@ return {
       })
     end
   },
-
-  {
-    'VonHeikemen/lsp-zero.nvim',
-    branch = 'v3.x',
-  },
-
-  {
-    'williamboman/mason-lspconfig.nvim'
-  },
-
-  {
-    'neovim/nvim-lspconfig',
-    event = "BufReadPre",
-  }
 }

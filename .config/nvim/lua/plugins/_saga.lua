@@ -1,24 +1,27 @@
 return {
   "glepnir/lspsaga.nvim",
   event = "LspAttach",
+  dependencies = {
+    -- make sure to install markdown and markdown_inline parser
+    { "nvim-treesitter/nvim-treesitter" },
+  },
   config = function()
     require("lspsaga").setup({
       ui = {
-        -- This option only works in Neovim 0.9
         title = true,
         -- Border type can be single, double, rounded, solid, shadow.
         border = "rounded",
         winblend = 0,
         expand = ">",
         collapse = "-",
-        code_action = "💡",
+        code_action = "",
         incoming = "↓",
         outgoing = "↑",
         hover = "◌",
         kind = nil,
       },
       symbol_in_winbar = {
-        enable = false,
+        enable = true,
         separator = "",
         color_mode = false,
       },
@@ -37,12 +40,5 @@ return {
         quit = { "q", "<ESC>" },
       },
     })
-    local map = vim.keymap.set
-    map("n", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
-    map("t", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
   end,
-  dependencies = {
-    --Please make sure you install markdown and markdown_inline parser
-    { "nvim-treesitter/nvim-treesitter" },
-  },
 }
