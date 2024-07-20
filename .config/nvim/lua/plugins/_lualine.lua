@@ -21,7 +21,7 @@ return {
       orange   = '#ad5700',
       violet   = '#a9a1e1',
       magenta  = '#c678dd',
-      blue     = '#3333ff',
+      blue     = '#70b8ff',
       red      = '#f16a50',
       pink     = '#ffccff'
     }
@@ -51,7 +51,7 @@ return {
           -- right section. Both are highlighted by c theme .  So we
           -- are just setting default looks o statusline
           normal = { c = { fg = colors.bg, bg = colors.fg } },
-          inactive = { c = { fg = colors.bg, bg = colors.fg } },
+          inactive = { c = { fg = colors.bg, bg = colors.fg1 } },
         },
       },
       sections = {
@@ -85,26 +85,16 @@ return {
       table.insert(config.sections.lualine_x, component)
     end
 
-    -- Inserts a component in lualine_c at left section
-    local function ins_left(component)
-      table.insert(config.sections.lualine_c, component)
-    end
-
-    -- Inserts a component in lualine_x ot right section
-    local function ins_right(component)
-      table.insert(config.sections.lualine_x, component)
-    end
-
     ins_left({
       -- mode component
       function()
-        return " ███"
+        return "████"
       end,
       color = function()
         -- auto change color according to neovims mode
         local mode_color = {
           n = colors.pink,
-          i = colors.bg2,
+          i = colors.yellow,
           v = colors.violet,
           [""] = colors.violet,
           V = colors.magenta,
@@ -142,7 +132,7 @@ return {
       color = { fg = colors.bg, gui = "bold" },
     })
 
-    ins_left({ "location", color = { fg = colors.bg } })
+    ins_left({ "location", color = { fg = colors.fg2 } })
 
     ins_left({ "progress", color = { fg = colors.fg2 } })
 
@@ -150,15 +140,15 @@ return {
       "diagnostics",
       sources = { "nvim_diagnostic" },
       symbols = {
-        error = '',
-        warn = '',
-        hint = '',
-        info = ''
+        error = ' ',
+        warn = ' ',
+        hint = ' ',
+        info = ' '
       },
       diagnostics_color = {
         color_error = { fg = colors.red },
         color_warn = { fg = colors.yellow },
-        color_info = { fg = colors.cyan },
+        color_info = { fg = colors.blue },
       },
     })
 
@@ -171,24 +161,25 @@ return {
     })
 
     ins_left({
-      -- Lsp server name .
+      -- Lsp server name
       function()
-        local msg = "no lsp attached!!?! (this may be normal)"
-        local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-        local clients = vim.lsp.get_active_clients()
-        if next(clients) == nil then
+        local msg = 'no active lsp!!?! (this might be normal)'
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+
+        if clients == nil or #clients == 0 then
           return msg
         end
-        for _, client in ipairs(clients) do
-          local filetypes = client.config.filetypes
-          if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-            return client.name
-          end
+
+        local client_names = {}
+        for _, client in pairs(clients) do
+          table.insert(client_names, client.name)
         end
-        return msg
+
+        return table.concat(client_names, ', ')
       end,
-      color = { fg = colors.bg, gui = "bold" },
+      color = { fg = '#ffffff', gui = 'bold' },
     })
+
 
     -- Add components to right sections
     ins_right({
@@ -202,13 +193,7 @@ return {
       "fileformat",
       fmt = string.upper,
       icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-      color = { fg = colors.bg, gui = "bold" },
-    })
-
-    ins_right({
-      "branch",
-      icon = "",
-      color = { fg = colors.violet, gui = "bold" },
+      color = { fg = colors.bg1, gui = "bold" },
     })
 
     ins_right({
@@ -216,12 +201,29 @@ return {
       -- Is it me or the symbol for modified us really weird
       symbols = { added = "█", modified = "█", removed = "█" },
       diff_color = {
-        added = { fg = colors.green },
-        modified = { fg = colors.yellow },
-        removed = { fg = colors.red },
+        added = 'LuaLineDiffAdd',
+        modified = 'LuaLineDiffChange',
+        removed = 'LuaLineDiffDelete',
       },
       cond = conditions.hide_in_width,
+      source = function()
+        local gitsigns = vim.b.gitsigns_status_dict
+        if gitsigns then
+          return {
+            added = gitsigns.added,
+            modified = gitsigns.changed,
+            removed = gitsigns.removed,
+          }
+        end
+      end,
     })
+
+    ins_right({
+      "branch",
+      icon = "",
+      color = { fg = colors.bg, gui = "bold" },
+    })
+
 
     -- Now don't forget to initialize lualine
     lualine.setup(config)

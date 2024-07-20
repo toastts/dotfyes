@@ -22,7 +22,7 @@ return {
       },
       symbol_in_winbar = {
         enable = true,
-        separator = "",
+        separator = "  ",
         color_mode = false,
       },
       code_action = {

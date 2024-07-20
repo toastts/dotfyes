@@ -12,7 +12,14 @@ return
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
       local lspkind = require('lspkind')
       local luasnip = require('luasnip')
+      luasnip.config.setup()
       require("luasnip.loaders.from_vscode").lazy_load()
+
+      local has_words_before = function()
+        unpack = unpack or table.unpack
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+      end
 
       cmp.event:on(
         'confirm_done',
@@ -27,10 +34,7 @@ return
             luasnip.lsp_expand(args.body)
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
-        view = {
-          entries = { name = 'custom', selection_order = 'near_cursor' }
-        },
+        completion = { completeopt = 'menu,menuone,noselect' },
         sources = {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
@@ -39,12 +43,12 @@ return
         },
         window = {
           documentation = cmp.config.window.bordered(),
-          completion = cmp.config.window.bordered()
+          completion = cmp.config.window.bordered(),
         },
         formatting = {
           format = lspkind.cmp_format({
             mode = 'symbol', -- show only symbol annotations
-            maxwidth = 44,   -- prevent popup from showing more than num
+            maxwidth = 48,   -- prevent popup from showing more than num
             -- can also be a function to dynamically calculate max width such as
             -- maxwidth = function() return math.floor(0.45 * vim.o.columns) end,
             ellipsis_char = '...',     -- when popup menu exceed maxwidth
@@ -69,20 +73,22 @@ return
 
           ['<C-e>'] = cmp.mapping.abort(),
           ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-          ['<CR>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              if luasnip.expandable() then
-                luasnip.expand()
-              else
-                cmp.confirm({
-                  select = true,
-                })
-              end
-            else
-              fallback()
-            end
-          end),
 
+          -- if nothing selected add newline as usual
+          -- if something has been selected, select it
+          -- ["<CR>"] = cmp.mapping({
+          --   i = function(fallback)
+          --     if cmp.visible() and cmp.get_active_entry() then
+          --       cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+          --     else
+          --       fallback()
+          --     end
+          --   end,
+          --   s = cmp.mapping.confirm({ select = true }),
+          --   c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false }),
+          -- }),
+
+          -- super-tab mappings
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -102,9 +108,23 @@ return
               fallback()
             end
           end, { "i", "s" }),
+
+
+          -- <c-l> will move you to the right of each of the expansion locations.
+          -- <c-h> is similar, except moving you backwards.
+          ['<C-l>'] = cmp.mapping(function()
+            if luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            end
+          end, { 'i', 's' }),
+          ['<C-h>'] = cmp.mapping(function()
+            if luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            end
+          end, { 'i', 's' }),
         },
       })
-      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      -- -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline({ '/', '?' }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
@@ -120,6 +140,14 @@ return
           { name = 'cmdline' }
         }),
         matching = { disallow_symbol_nonprefix_matching = false }
+      })
+
+      cmp.setup({
+        window = {
+          completion = {
+            scrollbar = false,
+          }
+        }
       })
     end,
   }
