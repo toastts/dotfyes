@@ -29,6 +29,16 @@ set -x GOBIN "$GOPATH/bin"
 if status is-interactive
   # Commands to run in interactive sessions can go here
 end
-set -gx VOLTA_HOME "$HOME/.volta"
 
-set -gx PATH "$VOLTA_HOME/bin:/Library/TeX/texbin:$HOME/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/opt/X11/bin:$HOME/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/local/opt/fzf/bin:usr/local/go/bin:$GOBIN:/Users/toast/bin"
+set -gx VOLTA_HOME "$HOME/.volta"
+set -gx PATH "$VOLTA_HOME/bin" $PATH
+
+# pnpm
+set -gx PNPM_HOME "/home/toast/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
+
+# Created by `pipx` on 2024-07-23 02:59:05
+set PATH $PATH /home/toast/.local/bin

@@ -257,6 +257,8 @@ return
       dashboard.button('f', '  Find text',
         "<cmd>lua require('fzf-lua').live_grep({ rg_opts = '--line-number --column --with-filename --no-heading --color=never --smart-case --max-columns=4096 -e'})<CR>"),
       dashboard.button('r', '󰄉  Recent files', "<cmd>lua require('fzf-lua').oldfiles()<CR>"),
+      dashboard.button('g', '  Neogit', ':Neogit<CR>'),
+      dashboard.button('|', ' ', ':<CR>'),
       dashboard.button('u', '󱐥  Update plugins', '<cmd>Lazy update<CR>'),
       dashboard.button('?', '  Settings', ':e $HOME/.config/nvim/init.lua<CR>'),
       dashboard.button('.', '󱗼  Dotfiles', ':e $HOME/.config <CR>'),

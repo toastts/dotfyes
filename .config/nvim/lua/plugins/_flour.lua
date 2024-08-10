@@ -277,9 +277,9 @@ Group.new("Removed",         c.none,         c.red_bg,    no) -- Removed lines n
 -- TreeSitter Highlighting --
 -----------------------------
 Group.new("@variable",                   g.Identifier,  g.Identifier,   g.Identifier)  -- various variable names
-Group.new("@variable.builtin",           g.Identifier,  g.Identifier,   g.Identifier)  -- built-in variable names (e.g. `this`, `self`)
-Group.new("@variable.parameter",         g.Identifier,  g.Identifier,   g.Identifier)  -- parameters of a function
-Group.new("@variable.parameter.builtin", g.Identifier,  g.Identifier,   g.Identifier) -- special parameters (e.g. `_`, `it`)
+Group.new("@variable.builtin",           g.Identifier,  g.Identifier,   g.Identifier+b)  -- built-in variable names (e.g. `this`, `self`)
+Group.new("@variable.parameter",         g.Identifier,  g.Identifier,   g.Identifier+b)  -- parameters of a function
+Group.new("@variable.parameter.builtin", g.Identifier,  g.Identifier,   g.Identifier+b) -- special parameters (e.g. `_`, `it`)
 Group.new("@variable.member",            g.Identifier,  g.Identifier,   g.Identifier)  -- object and struct fields
 Group.new("@property",                   g.Identifier,  g.Identifier,   g.Identifier)  -- the key in key/value pairs
 

@@ -58,7 +58,7 @@ render_timer = false
 TERM = "xterm-256color"
 
 [font]
-size = 12.5
+size = 14
 
 [font.bold]
 family = "BerkeleyMono Nerd Font"
@@ -491,7 +491,7 @@ save_to_clipboard = false
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
 
 [shell]
-program = "/usr/local/bin/fish"
+program = "/usr/bin/fish"
 
 [window]
 decorations = "none"
